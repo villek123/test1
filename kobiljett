@@ -1,5 +1,5 @@
 
-$url = "https://media.gettyimages.com/id/632495542/sv/foto/adult-film-actress-lana-rhoades-attends-the-2017-adult-video-news-awards-at-the-hard-rock-hotel.jpg?s=612x612&w=gi&k=20&c=-xs6qF6wEDlgCSr9dbzZH3V-H9ixv_NNxRiRE5KtywU="
+$url = "https://cdn.discordapp.com/attachments/1111654766750216274/1154326675824316496/image.png"
 $tempPath = [System.IO.Path]::GetTempFileName() + ".jpg"
 Invoke-WebRequest -Uri $url -OutFile $tempPath
 $style = 0
