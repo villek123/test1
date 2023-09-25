@@ -1,22 +1,17 @@
-# Define the desired language and keyboard layout
-$desiredLanguage = "sv-SE"
-$desiredKeyboardLayout = "040D:0000040D"
+# Define the URL of the image you want to use as wallpaper
+$imageUrl = "https://media.gettyimages.com/id/632495542/sv/foto/adult-film-actress-lana-rhoades-attends-the-2017-adult-video-news-awards-at-the-hard-rock-hotel.jpg?s=612x612&w=gi&k=20&c=-xs6qF6wEDlgCSr9dbzZH3V-H9ixv_NNxRiRE5KtywU="
 
-# Check if the desired language is already in the user language list
-$userLanguageList = Get-WinUserLanguageList
-$languageExists = $userLanguageList | Where-Object { $_.LanguageTag -eq $desiredLanguage }
+# Specify the local path where you want to save the downloaded image
+$localImagePath = "C:\wallpaper.jpg"
 
-if ($languageExists) {
-    # If the language is already in the list, set it as the primary language
-    Set-WinUILanguageOverride -Language $desiredLanguage
-    Set-WinUserLanguageList $languageExists -Force
-} else {
-    # If the language is not in the list, add it and set it as the primary language
-    $newLanguage = New-WinUserLanguageList $desiredLanguage
-    $newLanguage[0].InputMethodTips.Add($desiredKeyboardLayout)
-    Set-WinUserLanguageList $newLanguage -Force
-    Set-WinUILanguageOverride -Language $desiredLanguage
-}
+# Download the image from the URL
+Invoke-WebRequest -Uri $imageUrl -OutFile $localImagePath
 
-# Log off and log back in to apply the changes
-shutdown.exe /l
+# Set the downloaded image as the desktop wallpaper
+Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name Wallpaper -Value $localImagePath
+
+# Refresh the desktop to apply the new wallpaper
+Invoke-Expression -Command "RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters 1, True"
+
+# Clean up: Delete the downloaded image (optional)
+# Remove-Item -Path $localImagePath
