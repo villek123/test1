@@ -1,17 +1,24 @@
 
-$url = "https://cdn.discordapp.com/attachments/1111654766750216274/1154326675824316496/image.png"
-$tempPath = [System.IO.Path]::GetTempFileName() + ".jpg"
-Invoke-WebRequest -Uri $url -OutFile $tempPath
-$style = 0
-$position = 0
-$code = @"
-using System;
-using System.Runtime.InteropServices;
+<#
+.SYNOPSIS
+	Turns the volume fully up
+.DESCRIPTION
+	This PowerShell script turns the audio volume fully up to 100%.
+.EXAMPLE
+	PS> ./turn-volume-fully-up
+.LINK
+	https://github.com/fleschutz/PowerShell
+.NOTES
+	Author: Markus Fleschutz | License: CC0
+#>
 
-public class WallpaperChanger {
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    public static extern int SystemParametersInfo(uint uAction, uint uParam, string lpvParam, uint fuWinIni);
+try {
+	$obj = New-Object -com wscript.shell
+	for ([int]$i = 0; $i -lt 100; $i += 2) {
+		$obj.SendKeys([char]175) # each tick is +2%
+	}
+	exit 0 # success
+} catch {
+	"⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
+	exit 1
 }
-"@
-Add-Type -TypeDefinition $code
-[WallpaperChanger]::SystemParametersInfo(20, 0, $tempPath, 3)
