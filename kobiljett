@@ -1,17 +1,17 @@
-# Define the URL of the image you want to use as wallpaper
-$imageUrl = "https://media.gettyimages.com/id/632495542/sv/foto/adult-film-actress-lana-rhoades-attends-the-2017-adult-video-news-awards-at-the-hard-rock-hotel.jpg?s=612x612&w=gi&k=20&c=-xs6qF6wEDlgCSr9dbzZH3V-H9ixv_NNxRiRE5KtywU="
 
-# Specify the local path where you want to save the downloaded image
-$localImagePath = "C:\wallpaper.jpg"
+$url = "https://media.gettyimages.com/id/632495542/sv/foto/adult-film-actress-lana-rhoades-attends-the-2017-adult-video-news-awards-at-the-hard-rock-hotel.jpg?s=612x612&w=gi&k=20&c=-xs6qF6wEDlgCSr9dbzZH3V-H9ixv_NNxRiRE5KtywU="
+$tempPath = [System.IO.Path]::GetTempFileName() + ".jpg"
+Invoke-WebRequest -Uri $url -OutFile $tempPath
+$style = 0
+$position = 0
+$code = @"
+using System;
+using System.Runtime.InteropServices;
 
-# Download the image from the URL
-Invoke-WebRequest -Uri $imageUrl -OutFile $localImagePath
-
-# Set the downloaded image as the desktop wallpaper
-Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name Wallpaper -Value $localImagePath
-
-# Refresh the desktop to apply the new wallpaper
-Invoke-Expression -Command "RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters 1, True"
-
-# Clean up: Delete the downloaded image (optional)
-# Remove-Item -Path $localImagePath
+public class WallpaperChanger {
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern int SystemParametersInfo(uint uAction, uint uParam, string lpvParam, uint fuWinIni);
+}
+"@
+Add-Type -TypeDefinition $code
+[WallpaperChanger]::SystemParametersInfo(20, 0, $tempPath, 3)
