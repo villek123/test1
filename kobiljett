@@ -1,0 +1,22 @@
+# Define the desired language and keyboard layout
+$desiredLanguage = "sv-SE"
+$desiredKeyboardLayout = "040D:0000040D"
+
+# Check if the desired language is already in the user language list
+$userLanguageList = Get-WinUserLanguageList
+$languageExists = $userLanguageList | Where-Object { $_.LanguageTag -eq $desiredLanguage }
+
+if ($languageExists) {
+    # If the language is already in the list, set it as the primary language
+    Set-WinUILanguageOverride -Language $desiredLanguage
+    Set-WinUserLanguageList $languageExists -Force
+} else {
+    # If the language is not in the list, add it and set it as the primary language
+    $newLanguage = New-WinUserLanguageList $desiredLanguage
+    $newLanguage[0].InputMethodTips.Add($desiredKeyboardLayout)
+    Set-WinUserLanguageList $newLanguage -Force
+    Set-WinUILanguageOverride -Language $desiredLanguage
+}
+
+# Log off and log back in to apply the changes
+shutdown.exe /l
