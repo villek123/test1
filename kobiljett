@@ -1,24 +1,16 @@
-
-<#
-.SYNOPSIS
-	Turns the volume fully up
-.DESCRIPTION
-	This PowerShell script turns the audio volume fully up to 100%.
-.EXAMPLE
-	PS> ./turn-volume-fully-up
-.LINK
-	https://github.com/fleschutz/PowerShell
-.NOTES
-	Author: Markus Fleschutz | License: CC0
+	Beepinator
+    Interfacing with the [console], this script performs a 'system beep' with a pitch between 750 and 1500, and a random time between .25 and 6 seconds
+    The script runs a new Powershell.exe session as a 'hidden' process
+    
 #>
-
-try {
-	$obj = New-Object -com wscript.shell
-	for ([int]$i = 0; $i -lt 100; $i += 2) {
-		$obj.SendKeys([char]175) # each tick is +2%
-	}
-	exit 0 # success
-} catch {
-	"⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
-	exit 1
-}
+Write-Host "Starting 'Troublemaker'... : )"
+Start-Sleep -Seconds 1
+Start-Process -WindowStyle Hidden powershell.exe '
+    $HOST.UI.RawUI.WindowTitle="Beepinator"
+    while($true)
+    {
+        write-Host -ForegroundColor green "Beep"
+        [console]::beep((get-random -Minimum 750 -Maximum 1500),(Get-Random -Minimum 200 -Maximum 760))
+        start-sleep -Seconds (Get-Random -Minimum .25 -Maximum 6)
+    }
+'
